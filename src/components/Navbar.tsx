@@ -1,23 +1,43 @@
 import React from 'react';
+import Link from 'next/link';
 import { auth } from '../firebase/client';
-import { useAuthUser } from '@react-query-firebase/auth';
+import { deleteCookie } from 'cookies-next';
+import { useComponentVisible } from '../hooks/useComponentVisible';
+import { useAuthUser, useAuthSignOut } from '@react-query-firebase/auth';
+import { useRouter } from 'next/router';
 
 export function Navbar() {
-  const [showMenu, setShowMenu] = React.useState(false);
+  const { pathname } = useRouter();
   const { data: user } = useAuthUser(['user'], auth);
+  const { mutate: signOut } = useAuthSignOut(auth);
+  const {
+    ref: userMenuRef,
+    isComponentVisible: showUserMenu,
+    setIsComponentVisible: setShowUserMenu
+  } = useComponentVisible<HTMLDivElement>(false);
+  const {
+    ref: menuRef,
+    isComponentVisible: showMenu,
+    setIsComponentVisible: setShowMenu
+  } = useComponentVisible<HTMLDivElement>(false);
 
-  console.log(user);
+  React.useEffect(() => {
+    setShowMenu(false);
+  }, [pathname]);
+
+  const handleSignOut = () => {
+    deleteCookie('auth');
+    signOut();
+  };
 
   return (
-    <nav className="bg-gray-800">
+    <nav ref={menuRef} className="bg-orange-400 absolute w-full z-50">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
             <button
               type="button"
-              className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-              aria-controls="mobile-menu"
-              aria-expanded="false"
+              className="inline-flex items-center justify-center rounded-md p-2 text-white hover:bg-orange-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
               onClick={() => setShowMenu(!showMenu)}
             >
               <span className="sr-only">Open main menu</span>
@@ -60,115 +80,123 @@ export function Navbar() {
             <div className="flex flex-shrink-0 items-center">
               <img
                 className="block h-8 w-auto lg:hidden"
-                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                src="https://tailwindui.com/img/logos/mark.svg?color=orange&shade=300"
                 alt="Your Company"
               />
               <img
                 className="hidden h-8 w-auto lg:block"
-                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                src="https://tailwindui.com/img/logos/mark.svg?color=orange&shade=300"
                 alt="Your Company"
               />
             </div>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
                 {/* <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" --> */}
-                <a
-                  href="#"
-                  className="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium"
-                  aria-current="page"
+                <Link
+                  href="/dashboard"
+                  className="flex w-full justify-center rounded-md border border-transparent bg-orange-400 py-2 px-4 text-sm font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
                 >
                   Dashboard
-                </a>
-
-                <a
-                  href="#"
-                  className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                </Link>
+                <Link
+                  href="/team"
+                  className="flex w-full justify-center rounded-md border border-transparent bg-orange-400 py-2 px-4 text-sm font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
                 >
                   Team
-                </a>
-
-                <a
-                  href="#"
-                  className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                </Link>
+                <Link
+                  href="/projects"
+                  className="flex w-full justify-center rounded-md border border-transparent bg-orange-400 py-2 px-4 text-sm font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
                 >
                   Projects
-                </a>
-
-                <a
-                  href="#"
-                  className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                </Link>
+                <Link
+                  href="/calendar"
+                  className="flex w-full justify-center rounded-md border border-transparent bg-orange-400 py-2 px-4 text-sm font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
                 >
                   Calendar
-                </a>
+                </Link>
               </div>
             </div>
           </div>
-          <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-            {/* <!-- Profile dropdown --> */}
+          <div
+            ref={userMenuRef}
+            className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0"
+          >
             <div className="relative ml-3">
-              <div>
-                <button
-                  type="button"
-                  className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                  id="user-menu-button"
-                  aria-expanded="false"
-                  aria-haspopup="true"
-                >
-                  <span className="sr-only">Open user menu</span>
-                  <img
-                    className="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    alt=""
-                  />
-                </button>
-              </div>
-
-              {/* <!--
-            Dropdown menu, show/hide based on menu state.
-
-            Entering: "transition ease-out duration-100"
-              From: "transform opacity-0 scale-95"
-              To: "transform opacity-100 scale-100"
-            Leaving: "transition ease-in duration-75"
-              From: "transform opacity-100 scale-100"
-              To: "transform opacity-0 scale-95"
-          --> */}
-              <div
-                className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                role="menu"
-                aria-orientation="vertical"
-                aria-labelledby="user-menu-button"
-                tabIndex={-1}
-              >
-                {/* <!-- Active: "bg-gray-100", Not Active: "" --> */}
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-700"
-                  role="menuitem"
+              {user ? (
+                <div>
+                  <button
+                    type="button"
+                    className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                  >
+                    <span className="sr-only">Open user menu</span>
+                    <span className="inline-block h-8 w-8 overflow-hidden rounded-full bg-gray-100">
+                      {user.photoURL ? (
+                        <img
+                          className="h-8 w-8 rounded-full"
+                          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                          alt=""
+                        />
+                      ) : (
+                        <svg
+                          className="h-full w-full text-gray-300"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                      )}
+                    </span>
+                  </button>
+                </div>
+              ) : (
+                <div className="hidden sm:flex">
+                  <Link
+                    href="/signin"
+                    className="flex w-full justify-center rounded-md border border-transparent bg-orange-400 py-2 px-4 text-sm font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
+                  >
+                    Sign in
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="ml-2 flex w-full justify-center rounded-md border border-transparent bg-orange-300 py-2 px-4 text-sm font-medium text-white hover:bg-orange-500 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
+                  >
+                    Register
+                  </Link>
+                </div>
+              )}
+              {user && showUserMenu && (
+                <div
+                  className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                   tabIndex={-1}
-                  id="user-menu-item-0"
                 >
-                  Your Profile
-                </a>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-700"
-                  role="menuitem"
-                  tabIndex={-1}
-                  id="user-menu-item-1"
-                >
-                  Settings
-                </a>
-                <a
-                  href="#"
-                  className="block px-4 py-2 text-sm text-gray-700"
-                  role="menuitem"
-                  tabIndex={-1}
-                  id="user-menu-item-2"
-                >
-                  Sign out
-                </a>
-              </div>
+                  {/* <!-- Active: "bg-gray-100", Not Active: "" --> */}
+                  <a
+                    href="#"
+                    className="block px-4 py-2 text-sm text-gray-700"
+                    tabIndex={-1}
+                  >
+                    Your Profile
+                  </a>
+                  <a
+                    href="#"
+                    className="block px-4 py-2 text-sm text-gray-700"
+                    tabIndex={-1}
+                  >
+                    Settings
+                  </a>
+                  <button
+                    type="button"
+                    className="block px-4 py-2 text-sm text-gray-700"
+                    tabIndex={-1}
+                    onClick={handleSignOut}
+                  >
+                    Sign out
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -176,34 +204,50 @@ export function Navbar() {
 
       {/* <!-- Mobile menu, show/hide based on menu state. --> */}
       {showMenu && (
-        <div className="sm:hidden" id="mobile-menu">
-          <div className="space-y-1 px-2 pt-2 pb-3">
+        <div className="sm:hidden">
+          <div className="space-y-1 px-2 pt-2 pb-3 ">
             {/* <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" --> */}
-            <a
-              href="#"
-              className="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
-              aria-current="page"
+            <Link
+              href="/dashboard"
+              className="block rounded-md border border-transparent bg-orange-400 p-2 text-base font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
             >
               Dashboard
-            </a>
-            <a
-              href="#"
-              className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            </Link>
+            <Link
+              href="/team"
+              className="block rounded-md border border-transparent bg-orange-400 p-2 text-base font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
             >
               Team
-            </a>
-            <a
-              href="#"
-              className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            </Link>
+            <Link
+              href="/projects"
+              className="block rounded-md border border-transparent bg-orange-400 p-2 text-base font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
             >
               Projects
-            </a>
-            <a
-              href="#"
-              className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            </Link>
+            <Link
+              href="/calendar"
+              className="block rounded-md border border-transparent bg-orange-400 p-2 text-base font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
             >
               Calendar
-            </a>
+            </Link>
+            {!user && (
+              <div>
+                <div className="border-b-2" />
+                <Link
+                  href="/register"
+                  className="block text-center rounded-md border border-transparent bg-orange-300 mt-4 py-2 px-4 text-sm font-medium text-white hover:bg-orange-500 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
+                >
+                  Register
+                </Link>
+                <p className="mt-2 text-center text-sm text-white">
+                  Already have an account?{' '}
+                  <Link href="/signin" className="font-bold">
+                    Sign in
+                  </Link>
+                </p>
+              </div>
+            )}
           </div>
         </div>
       )}
