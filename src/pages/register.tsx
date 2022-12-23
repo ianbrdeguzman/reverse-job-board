@@ -4,7 +4,10 @@ import { hasCookie } from 'cookies-next';
 import { auth } from '../firebase/client';
 import { GetServerSidePropsContext } from 'next';
 import { validateInputs } from '../lib/validateInputs';
-import { useAuthCreateUserWithEmailAndPassword } from '@react-query-firebase/auth';
+import {
+  useAuthSignOut,
+  useAuthCreateUserWithEmailAndPassword
+} from '@react-query-firebase/auth';
 
 export default function RegisterPage() {
   const {
@@ -13,6 +16,8 @@ export default function RegisterPage() {
     isSuccess,
     isError
   } = useAuthCreateUserWithEmailAndPassword(auth);
+
+  const { mutate: signOut } = useAuthSignOut(auth);
   const [inputs, setInputs] = React.useState({
     email: '',
     password: '',
@@ -40,8 +45,10 @@ export default function RegisterPage() {
     register(
       { email: inputs.email.trim(), password: inputs.password.trim() },
       {
-        onSuccess: () =>
-          setInputs({ email: '', password: '', 'confirm-password': '' })
+        onSuccess: () => {
+          signOut();
+          setInputs({ email: '', password: '', 'confirm-password': '' });
+        }
       }
     );
   };
@@ -50,11 +57,6 @@ export default function RegisterPage() {
     <div className="h-screen flex justify-center items-center">
       <div className="w-full max-w-md">
         <div>
-          <img
-            className="mx-auto h-12 w-auto"
-            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-            alt="Your Company"
-          />
           <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
             Register an account
           </h2>
@@ -128,9 +130,14 @@ export default function RegisterPage() {
             </button>
           </div>
         </form>
-        {!isSuccess && (
+        {isSuccess && (
           <p className="mt-2 text-sm text-center text-green-500">
             Registration successful
+          </p>
+        )}
+        {isError && (
+          <p className="mt-2 text-sm text-center text-red-500 italic">
+            Invalid email address or password
           </p>
         )}
       </div>
