@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { config } from '../config';
 import { useRouter } from 'next/router';
 import { auth } from '../firebase/client';
 import { GetServerSidePropsContext } from 'next';
@@ -39,7 +40,7 @@ export default function SignInPage() {
       {
         onSuccess: async ({ user }) => {
           const token = await user.getIdToken();
-          setCookie('auth', token);
+          setCookie(config.cookie.auth, token);
           push('/');
         }
       }
@@ -126,7 +127,7 @@ export default function SignInPage() {
 }
 
 export function getServerSideProps(context: GetServerSidePropsContext) {
-  if (hasCookie('auth', context)) {
+  if (hasCookie(config.cookie.auth, context)) {
     return {
       redirect: {
         destination: '/',
