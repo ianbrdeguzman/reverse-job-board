@@ -1,14 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
+import { config } from '../config';
+import { useRouter } from 'next/router';
 import { auth } from '../firebase/client';
 import { deleteCookie } from 'cookies-next';
 import { useComponentVisible } from '../hooks/useComponentVisible';
 import { useAuthUser, useAuthSignOut } from '@react-query-firebase/auth';
-import { useRouter } from 'next/router';
 
 export function Navbar() {
+  const { data: user } = useAuthUser('[user]', auth);
   const { pathname } = useRouter();
-  const { data: user } = useAuthUser(['user'], auth);
   const { mutate: signOut } = useAuthSignOut(auth);
   const {
     ref: userMenuRef,
@@ -26,12 +27,13 @@ export function Navbar() {
   }, [pathname]);
 
   const handleSignOut = () => {
-    deleteCookie('auth');
+    deleteCookie(config.cookie.auth);
     signOut();
+    setShowUserMenu(false);
   };
 
   return (
-    <nav ref={menuRef} className="bg-orange-400 absolute w-full z-50">
+    <nav ref={menuRef} className="bg-orange-400 absolute w-full z-50 shadow-lg">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -78,43 +80,37 @@ export function Navbar() {
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex flex-shrink-0 items-center">
-              <img
-                className="block h-8 w-auto lg:hidden"
-                src="https://tailwindui.com/img/logos/mark.svg?color=orange&shade=300"
-                alt="Your Company"
-              />
-              <img
-                className="hidden h-8 w-auto lg:block"
-                src="https://tailwindui.com/img/logos/mark.svg?color=orange&shade=300"
-                alt="Your Company"
-              />
+              <Link
+                href="/"
+                className="p-1 rounded-md border border-transparent hover:bg-orange-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+              >
+                <img
+                  className="block h-8 w-auto lg:hidden"
+                  src="https://tailwindui.com/img/logos/mark.svg?color=white"
+                  alt="Your Company"
+                />
+              </Link>
             </div>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
                 {/* <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" --> */}
                 <Link
-                  href="/dashboard"
+                  href="/about"
                   className="flex w-full justify-center rounded-md border border-transparent bg-orange-400 py-2 px-4 text-sm font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
                 >
-                  Dashboard
+                  About
                 </Link>
                 <Link
-                  href="/team"
+                  href="/available"
                   className="flex w-full justify-center rounded-md border border-transparent bg-orange-400 py-2 px-4 text-sm font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
                 >
-                  Team
+                  Available
                 </Link>
                 <Link
-                  href="/projects"
+                  href="/donate"
                   className="flex w-full justify-center rounded-md border border-transparent bg-orange-400 py-2 px-4 text-sm font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
                 >
-                  Projects
-                </Link>
-                <Link
-                  href="/calendar"
-                  className="flex w-full justify-center rounded-md border border-transparent bg-orange-400 py-2 px-4 text-sm font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
-                >
-                  Calendar
+                  Donate
                 </Link>
               </div>
             </div>
@@ -133,7 +129,7 @@ export function Navbar() {
                   >
                     <span className="sr-only">Open user menu</span>
                     <span className="inline-block h-8 w-8 overflow-hidden rounded-full bg-gray-100">
-                      {user.photoURL ? (
+                      {user?.photoURL ? (
                         <img
                           className="h-8 w-8 rounded-full"
                           src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
@@ -173,23 +169,23 @@ export function Navbar() {
                   tabIndex={-1}
                 >
                   {/* <!-- Active: "bg-gray-100", Not Active: "" --> */}
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700"
+                  <Link
+                    href="/profile"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-100"
                     tabIndex={-1}
                   >
-                    Your Profile
-                  </a>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700"
+                    Add your profile
+                  </Link>
+                  <Link
+                    href="/settings"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-100"
                     tabIndex={-1}
                   >
                     Settings
-                  </a>
+                  </Link>
                   <button
                     type="button"
-                    className="block px-4 py-2 text-sm text-gray-700"
+                    className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-orange-100"
                     tabIndex={-1}
                     onClick={handleSignOut}
                   >
@@ -208,28 +204,22 @@ export function Navbar() {
           <div className="space-y-1 px-2 pt-2 pb-3 ">
             {/* <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" --> */}
             <Link
-              href="/dashboard"
+              href="/about"
               className="block rounded-md border border-transparent bg-orange-400 p-2 text-base font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
             >
-              Dashboard
+              About
             </Link>
             <Link
-              href="/team"
+              href="/available"
               className="block rounded-md border border-transparent bg-orange-400 p-2 text-base font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
             >
-              Team
+              Available
             </Link>
             <Link
-              href="/projects"
+              href="/donate"
               className="block rounded-md border border-transparent bg-orange-400 p-2 text-base font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
             >
-              Projects
-            </Link>
-            <Link
-              href="/calendar"
-              className="block rounded-md border border-transparent bg-orange-400 p-2 text-base font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
-            >
-              Calendar
+              Donate
             </Link>
             {!user && (
               <div>
