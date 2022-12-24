@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { config } from '../config';
 import { hasCookie } from 'cookies-next';
 import { auth } from '../firebase/client';
 import { GetServerSidePropsContext } from 'next';
@@ -146,7 +147,7 @@ export default function RegisterPage() {
 }
 
 export function getServerSideProps(context: GetServerSidePropsContext) {
-  if (hasCookie('auth', context)) {
+  if (hasCookie(config.cookie.auth, context)) {
     return {
       redirect: {
         destination: '/',
