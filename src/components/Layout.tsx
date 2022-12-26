@@ -1,5 +1,6 @@
 import React from 'react';
 import { Navbar } from './Navbar';
+import { nunito } from '../pages/_app';
 
 interface Props {
   children: React.ReactNode;
@@ -7,9 +8,9 @@ interface Props {
 
 export function Layout({ children }: Props) {
   return (
-    <>
+    <main className={nunito.className}>
       <Navbar />
       {children}
-    </>
+    </main>
   );
 }
