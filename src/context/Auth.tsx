@@ -10,6 +10,7 @@ import {
 import { FirebaseError } from 'firebase/app';
 import { deleteCookie, setCookie } from 'cookies-next';
 import { useRouter } from 'next/router';
+import { config } from '../config';
 
 interface AuthContextInterface {
   user: User | null;
@@ -38,11 +39,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user !== null) {
         const token = await user.getIdToken();
-        setCookie('rjb-auth', token);
+        setCookie(config.cookie.token, token);
         setUser(user);
         setIsSuccess(true);
       } else {
-        deleteCookie('rjb-auth');
+        deleteCookie(config.cookie.token);
         setUser(null);
       }
     });
@@ -78,7 +79,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (error instanceof FirebaseError) setIsError(true);
     } finally {
       setIsLoading(false);
-      router.push('/');
+      router.push(config.routes.home);
     }
   };
 
