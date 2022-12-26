@@ -4,5 +4,14 @@ export const config = {
     clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
     privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY?.replace(/\\n/g, '\n'),
     databaseUrl: process.env.FIREBASE_ADMIN_DATABASE_URL
+  },
+  cookie: {
+    token: 'rjb_token'
+  },
+  routes: {
+    home: '/',
+    signin: '/signin',
+    register: '/register',
+    profile: '/profile'
   }
 };

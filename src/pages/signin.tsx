@@ -1,8 +1,9 @@
 import Link from 'next/link';
-import { useAuth } from '../hooks/useAuth';
-import { GetServerSidePropsContext } from 'next';
+import { config } from '../config';
 import { getCookie } from 'cookies-next';
 import { auth } from '../firebase/admin';
+import { useAuth } from '../hooks/useAuth';
+import { GetServerSidePropsContext } from 'next';
 
 export default function SignInPage() {
   const { signIn, isLoading, isError } = useAuth();
@@ -22,7 +23,7 @@ export default function SignInPage() {
           <p className="mt-2 text-center text-sm text-gray-600">
             Or{' '}
             <Link
-              href="/register"
+              href={config.routes.register}
               className="font-medium text-orange-600 hover:text-orange-500"
             >
               register a new account
@@ -84,7 +85,7 @@ export default function SignInPage() {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const token = getCookie('rjb-auth', context) as string;
+  const token = getCookie(config.cookie.token, context) as string;
 
   if (!token) {
     return {
@@ -97,7 +98,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     return {
       redirect: {
         permanent: false,
-        destination: '/'
+        destination: config.routes.home
       }
     };
   } catch (error) {
