@@ -2,11 +2,10 @@ import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { Nunito } from '@next/font/google';
 import { Layout } from '../components/Layout';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { Providers } from '../components/Providers';
 import '../styles/globals.css';
 
-const nunito = Nunito({ subsets: ['latin'] });
-const queryClient = new QueryClient();
+export const nunito = Nunito({ subsets: ['latin'] });
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -17,13 +16,11 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <QueryClientProvider client={queryClient}>
+      <Providers>
         <Layout>
-          <main className={nunito.className}>
-            <Component {...pageProps} />
-          </main>
+          <Component {...pageProps} />
         </Layout>
-      </QueryClientProvider>
+      </Providers>
     </>
   );
 }
