@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useAuth } from '../hooks/useAuth';
 import { useComponentVisible } from '../hooks/useComponentVisible';
+import { config } from '../config';
 
 export function Navbar() {
   const { user, signOut } = useAuth();
@@ -20,6 +21,7 @@ export function Navbar() {
 
   React.useEffect(() => {
     setShowMenu(false);
+    setShowUserMenu(false);
   }, [pathname]);
 
   return (
@@ -140,13 +142,13 @@ export function Navbar() {
               ) : (
                 <div className="hidden sm:flex">
                   <Link
-                    href="/signin"
+                    href={config.routes.signin}
                     className="flex w-full justify-center rounded-md border border-transparent bg-orange-400 py-2 px-4 text-sm font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
                   >
                     Sign in
                   </Link>
                   <Link
-                    href="/register"
+                    href={config.routes.register}
                     className="ml-2 flex w-full justify-center rounded-md border border-transparent bg-orange-300 py-2 px-4 text-sm font-medium text-white hover:bg-orange-500 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
                   >
                     Register
@@ -160,7 +162,7 @@ export function Navbar() {
                 >
                   {/* <!-- Active: "bg-gray-100", Not Active: "" --> */}
                   <Link
-                    href="/profile"
+                    href={config.routes.profile}
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-100"
                     tabIndex={-1}
                   >
@@ -215,14 +217,14 @@ export function Navbar() {
               <div>
                 <div className="border-b-2" />
                 <Link
-                  href="/register"
+                  href={config.routes.register}
                   className="block text-center rounded-md border border-transparent bg-orange-300 mt-4 py-2 px-4 text-sm font-medium text-white hover:bg-orange-500 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
                 >
                   Register
                 </Link>
                 <p className="mt-2 text-center text-sm text-white">
                   Already have an account?{' '}
-                  <Link href="/signin" className="font-bold">
+                  <Link href={config.routes.signin} className="font-bold">
                     Sign in
                   </Link>
                 </p>
