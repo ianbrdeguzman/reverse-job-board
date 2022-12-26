@@ -1,57 +1,16 @@
 import React from 'react';
 import Link from 'next/link';
-import { config } from '../config';
-import { hasCookie } from 'cookies-next';
-import { auth } from '../firebase/client';
+import { getCookie } from 'cookies-next';
+import { auth } from '../firebase/admin';
+import { useAuth } from '../hooks/useAuth';
 import { GetServerSidePropsContext } from 'next';
-import { validateInputs } from '../lib/validateInputs';
-import {
-  useAuthSignOut,
-  useAuthCreateUserWithEmailAndPassword
-} from '@react-query-firebase/auth';
 
 export default function RegisterPage() {
-  const {
-    mutate: register,
-    isLoading,
-    isSuccess,
-    isError
-  } = useAuthCreateUserWithEmailAndPassword(auth);
-
-  const { mutate: signOut } = useAuthSignOut(auth);
-  const [inputs, setInputs] = React.useState({
-    email: '',
-    password: '',
-    ['confirm-password']: ''
-  });
-
-  const handleOnChange = (e: React.FormEvent<HTMLInputElement>) => {
-    setInputs({
-      ...inputs,
-      [e.currentTarget.name]: e.currentTarget.value
-    });
-  };
+  const { register, isLoading, isError, isSuccess } = useAuth();
 
   const handleOnSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (inputs.password !== inputs['confirm-password']) {
-      return;
-    }
-
-    if (!validateInputs(inputs)) {
-      return;
-    }
-
-    register(
-      { email: inputs.email.trim(), password: inputs.password.trim() },
-      {
-        onSuccess: () => {
-          signOut();
-          setInputs({ email: '', password: '', 'confirm-password': '' });
-        }
-      }
-    );
+    register('ian@test.com', 'asdasd');
   };
 
   return (
@@ -85,8 +44,6 @@ export default function RegisterPage() {
                 required
                 className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-orange-500 focus:outline-none focus:ring-orange-500 sm:text-sm"
                 placeholder="Email address"
-                value={inputs.email}
-                onChange={handleOnChange}
               />
             </div>
             <div>
@@ -101,8 +58,6 @@ export default function RegisterPage() {
                 required
                 className="relative block w-full appearance-none rounded-none border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-orange-500 focus:outline-none focus:ring-orange-500 sm:text-sm"
                 placeholder="Password"
-                value={inputs.password}
-                onChange={handleOnChange}
               />
             </div>
             <div>
@@ -117,8 +72,6 @@ export default function RegisterPage() {
                 required
                 className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-orange-500 focus:outline-none focus:ring-orange-500 sm:text-sm"
                 placeholder="Confirm password"
-                value={inputs['confirm-password']}
-                onChange={handleOnChange}
               />
             </div>
           </div>
@@ -131,32 +84,34 @@ export default function RegisterPage() {
             </button>
           </div>
         </form>
-        {isSuccess && (
-          <p className="mt-2 text-sm text-center text-green-500">
-            Registration successful
-          </p>
-        )}
-        {isError && (
-          <p className="mt-2 text-sm text-center text-red-500 italic">
-            Invalid email address or password
-          </p>
-        )}
+        {isSuccess && <p>Registered successfully</p>}
+        {isError && <p>Invalid email or password</p>}
       </div>
     </div>
   );
 }
 
-export function getServerSideProps(context: GetServerSidePropsContext) {
-  if (hasCookie(config.cookie.auth, context)) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const token = getCookie('rjb-auth', context) as string;
+
+  if (!token) {
     return {
-      redirect: {
-        destination: '/',
-        permanent: false
-      }
+      props: {}
     };
   }
+  try {
+    await auth.verifyIdToken(token);
 
-  return {
-    props: {}
-  };
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/'
+      }
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      props: {}
+    };
+  }
 }
