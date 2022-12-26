@@ -1,16 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
-import { config } from '../config';
 import { useRouter } from 'next/router';
-import { auth } from '../firebase/client';
-import { deleteCookie } from 'cookies-next';
+import { useAuth } from '../hooks/useAuth';
 import { useComponentVisible } from '../hooks/useComponentVisible';
-import { useAuthUser, useAuthSignOut } from '@react-query-firebase/auth';
 
 export function Navbar() {
-  const { data: user } = useAuthUser('[user]', auth);
+  const { user, signOut } = useAuth();
   const { pathname } = useRouter();
-  const { mutate: signOut } = useAuthSignOut(auth);
   const {
     ref: userMenuRef,
     isComponentVisible: showUserMenu,
@@ -25,12 +21,6 @@ export function Navbar() {
   React.useEffect(() => {
     setShowMenu(false);
   }, [pathname]);
-
-  const handleSignOut = () => {
-    deleteCookie(config.cookie.auth);
-    signOut();
-    setShowUserMenu(false);
-  };
 
   return (
     <nav ref={menuRef} className="bg-orange-400 absolute w-full z-50 shadow-lg">
@@ -187,7 +177,7 @@ export function Navbar() {
                     type="button"
                     className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-orange-100"
                     tabIndex={-1}
-                    onClick={handleSignOut}
+                    onClick={signOut}
                   >
                     Sign out
                   </button>
