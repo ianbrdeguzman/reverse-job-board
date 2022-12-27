@@ -1,14 +1,14 @@
+import { config } from '../config';
 import { auth } from '../firebase/admin';
 import { getCookie } from 'cookies-next';
 import { GetServerSidePropsContext } from 'next';
 import { ProtectedPage } from '../components/ProtectedPage';
-import { config } from '../config';
 
 export default function ProfilePage() {
   return (
     <ProtectedPage>
       <div className="pt-[4rem]">
-        <h1>Profile Page</h1>x
+        <h1>Profile Page</h1>
       </div>
     </ProtectedPage>
   );

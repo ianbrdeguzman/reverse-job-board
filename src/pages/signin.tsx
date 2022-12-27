@@ -4,13 +4,23 @@ import { getCookie } from 'cookies-next';
 import { auth } from '../firebase/admin';
 import { useAuth } from '../hooks/useAuth';
 import { GetServerSidePropsContext } from 'next';
+import { useForm, SubmitHandler } from 'react-hook-form';
+
+export interface Inputs {
+  email: string;
+  password: string;
+}
 
 export default function SignInPage() {
   const { signIn, isLoading, isError } = useAuth();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<Inputs>();
 
-  const handleOnSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    signIn('ian@test.com', 'asdasd');
+  const handleOnSubmit: SubmitHandler<Inputs> = ({ email, password }) => {
+    signIn(email, password);
   };
 
   return (
@@ -27,37 +37,69 @@ export default function SignInPage() {
             Or register a new account
           </Link>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleOnSubmit}>
-          <div className="-space-y-px rounded-md shadow-sm">
-            <label htmlFor="email-address" className="sr-only">
-              Email address
-            </label>
-            <input
-              id="email-address"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-orange-500 focus:outline-none focus:ring-orange-500 sm:text-sm"
-              placeholder="Email address"
-            />
-
-            <label htmlFor="password" className="sr-only">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-orange-500 focus:outline-none focus:ring-orange-500 sm:text-sm"
-              placeholder="Password"
-            />
+        <form
+          className="mt-8 space-y-6"
+          onSubmit={handleSubmit(handleOnSubmit)}
+        >
+          <div className="-space-y-px rounded-md">
+            <div className="relative">
+              <label htmlFor="email-address" className="sr-only">
+                Email address
+              </label>
+              <input
+                id="email-address"
+                type="email"
+                autoComplete="email"
+                required
+                className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-orange-500 focus:outline-none focus:ring-orange-500 sm:text-sm shadow-sm"
+                placeholder="Email address"
+                {...register('email', {
+                  required: true,
+                  maxLength: {
+                    value: 50,
+                    message: 'Maxiumum length is 50 characters'
+                  }
+                })}
+              />
+              {errors.email && (
+                <p className="text-xs absolute bottom-0 right-1 text-red-500 italic z-10">
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
+            <div className="relative">
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-orange-500 focus:outline-none focus:ring-orange-500 sm:text-sm shadow-sm"
+                placeholder="Password"
+                {...register('password', {
+                  required: true,
+                  minLength: {
+                    value: 6,
+                    message: 'Minimum length is 6 characters'
+                  },
+                  maxLength: {
+                    value: 20,
+                    message: 'Maximum password length is 20 characters'
+                  }
+                })}
+              />
+              {errors.password && (
+                <p className="text-xs absolute bottom-0 right-1 text-red-500 italic z-10">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
           </div>
           <Link
             href="/forgot-password"
-            className="block mt-2 text-sm font-medium text-orange-400 hover:text-orange-500"
+            className="mt-2 text-sm font-medium text-orange-400 hover:text-orange-500"
           >
             Forgot your password?
           </Link>
@@ -68,7 +110,11 @@ export default function SignInPage() {
             {isLoading ? 'Loading...' : 'Sign In'}
           </button>
         </form>
-        {isError && <p>Invalid email or password</p>}
+        {isError && (
+          <p className="text-xs text-center mt-1 text-red-500 italic z-10">
+            Invalid email or password
+          </p>
+        )}
       </div>
     </div>
   );

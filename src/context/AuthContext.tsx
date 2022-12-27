@@ -75,11 +75,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setIsLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      router.push(config.routes.home);
     } catch (error) {
       if (error instanceof FirebaseError) setIsError(true);
     } finally {
       setIsLoading(false);
-      router.push(config.routes.home);
     }
   };
 
