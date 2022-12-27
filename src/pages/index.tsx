@@ -1,6 +1,6 @@
 export default function Home() {
   return (
-    <div className="pt-[4rem] h-screen flex flex-col justify-center items-center text-center">
+    <div className="h-screen flex flex-col justify-center items-center text-center">
       <div className="px-2">
         <h1 className="text-3xl font-extrabold sm:text-5xl md:text-6xl">
           <span className="block text-gray-600">The reverse job board for</span>
