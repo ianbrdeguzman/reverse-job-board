@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { useEffect } from 'react';
 import { config } from '../config';
 import { getCookie } from 'cookies-next';
 import { auth } from '../firebase/admin';
@@ -12,7 +13,7 @@ export interface Inputs {
 }
 
 export default function SignInPage() {
-  const { signIn, isLoading, isError } = useAuth();
+  const { signIn, isLoading, isError, reset } = useAuth();
   const {
     register,
     handleSubmit,
@@ -22,6 +23,10 @@ export default function SignInPage() {
   const handleOnSubmit: SubmitHandler<Inputs> = ({ email, password }) => {
     signIn(email, password);
   };
+
+  useEffect(() => {
+    return reset;
+  }, []);
 
   return (
     <div className="h-screen flex justify-center items-center">
