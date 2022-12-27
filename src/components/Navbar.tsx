@@ -1,9 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
+import { config } from '../config';
 import { useRouter } from 'next/router';
 import { useAuth } from '../hooks/useAuth';
 import { useComponentVisible } from '../hooks/useComponentVisible';
-import { config } from '../config';
+import { HiOutlineBars3, HiOutlineXMark, HiOutlineUser } from 'react-icons/hi2';
 
 export function Navbar() {
   const { user, signOut } = useAuth();
@@ -36,37 +37,9 @@ export function Navbar() {
             >
               <span className="sr-only">Open main menu</span>
               {!showMenu ? (
-                <svg
-                  className="block h-6 w-6"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                  />
-                </svg>
+                <HiOutlineBars3 className="w-6 h-6" />
               ) : (
-                <svg
-                  className="h-6 w-6"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <HiOutlineXMark className="w-6 h-6" />
               )}
             </button>
           </div>
@@ -77,7 +50,7 @@ export function Navbar() {
                 className="p-1 rounded-md border border-transparent hover:bg-orange-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
               >
                 <img
-                  className="block h-8 w-auto lg:hidden"
+                  className="block h-8 w-auto"
                   src="https://tailwindui.com/img/logos/mark.svg?color=white"
                   alt="Your Company"
                 />
@@ -93,10 +66,10 @@ export function Navbar() {
                   About
                 </Link>
                 <Link
-                  href="/available"
+                  href="/filipinos"
                   className="flex w-full justify-center rounded-md border border-transparent bg-orange-400 py-2 px-4 text-sm font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
                 >
-                  Available
+                  Filipinos
                 </Link>
                 <Link
                   href="/donate"
@@ -120,21 +93,15 @@ export function Navbar() {
                     onClick={() => setShowUserMenu(!showUserMenu)}
                   >
                     <span className="sr-only">Open user menu</span>
-                    <span className="inline-block h-8 w-8 overflow-hidden rounded-full bg-gray-100">
-                      {user?.photoURL ? (
+                    <span className="inline-block flex justify-center items-center h-8 w-8 overflow-hidden rounded-full bg-gray-100">
+                      {user && user.photoURL ? (
                         <img
                           className="h-8 w-8 rounded-full"
-                          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                          alt=""
+                          src={user.photoURL}
+                          alt={user.email!}
                         />
                       ) : (
-                        <svg
-                          className="h-full w-full text-gray-300"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
+                        <HiOutlineUser className="w-6 h-6 text-gray-400" />
                       )}
                     </span>
                   </button>
@@ -202,10 +169,10 @@ export function Navbar() {
               About
             </Link>
             <Link
-              href="/available"
+              href="/filipinos"
               className="block rounded-md border border-transparent bg-orange-400 p-2 text-base font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
             >
-              Available
+              Filipinos
             </Link>
             <Link
               href="/donate"
@@ -224,7 +191,10 @@ export function Navbar() {
                 </Link>
                 <p className="mt-2 text-center text-sm text-white">
                   Already have an account?{' '}
-                  <Link href={config.routes.signin} className="font-bold">
+                  <Link
+                    href={config.routes.signin}
+                    className="font-bold hover:underline"
+                  >
                     Sign in
                   </Link>
                 </p>
