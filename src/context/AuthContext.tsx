@@ -89,7 +89,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     try {
       await signOutUser(auth);
-      setIsSuccess(true);
     } catch (error) {
       if (error instanceof FirebaseError) setIsError(true);
     } finally {

@@ -1,15 +1,17 @@
 import { config } from '../config';
-import type { Inputs } from './signin';
 import React, { useEffect } from 'react';
 import { getCookie } from 'cookies-next';
 import { auth } from '../firebase/admin';
 import { useAuth } from '../hooks/useAuth';
+import { Input } from '../components/Input';
 import { GetServerSidePropsContext } from 'next';
 import { FormHeader } from '../components/FormHeader';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
-interface RegisterInputs extends Inputs {
-  'confirm-password': string;
+export interface RegisterInputs {
+  email: string;
+  password: string;
+  'confirm-password'?: string;
 }
 
 export default function RegisterPage() {
@@ -32,6 +34,7 @@ export default function RegisterPage() {
     return reset;
   }, []);
 
+  console.log(errors);
   return (
     <div className="h-screen flex justify-center items-center">
       <div className="w-full mx-2 max-w-md">
@@ -45,86 +48,38 @@ export default function RegisterPage() {
           onSubmit={handleSubmit(handleOnSubmit)}
         >
           <div className=" rounded-md shadow-sm">
-            <div className="relative">
-              <label htmlFor="email-address" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="email-address"
-                type="email"
-                autoComplete="email"
-                required
-                className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-orange-500 focus:outline-none focus:ring-orange-500 sm:text-sm shadow-sm"
-                placeholder="Email address"
-                {...registerInput('email', {
-                  required: true,
-                  maxLength: {
-                    value: 50,
-                    message: 'Maxiumum length is 50 characters'
-                  }
-                })}
-              />
-              {errors.email && (
-                <p className="text-xs absolute bottom-0 right-1 text-red-500 italic z-10">
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
-            <div className="relative">
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="relative block w-full appearance-none rounded-none border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-orange-500 focus:outline-none focus:ring-orange-500 sm:text-sm shadow-sm"
-                placeholder="Password"
-                {...registerInput('password', {
-                  required: true,
-                  minLength: {
-                    value: 6,
-                    message: 'Minimum length is 6 characters'
-                  },
-                  maxLength: {
-                    value: 20,
-                    message: 'Maximum password length is 20 characters'
-                  }
-                })}
-              />
-              {errors.password && (
-                <p className="text-xs absolute bottom-0 right-1 text-red-500 italic z-10">
-                  {errors.password.message}
-                </p>
-              )}
-            </div>
-            <div className="relative">
-              <label htmlFor="confirm-password" className="sr-only">
-                Confirm password
-              </label>
-              <input
-                id="confirm-password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-orange-500 focus:outline-none focus:ring-orange-500 sm:text-sm"
-                placeholder="Confirm password"
-                {...registerInput('confirm-password', {
-                  required: true,
-                  validate: (val: string) => {
-                    if (watch('password') !== val) {
-                      return 'Password does not match';
-                    }
-                  }
-                })}
-              />
-              {errors['confirm-password'] && (
-                <p className="text-xs absolute bottom-0 right-1 text-red-500 italic z-10">
-                  {errors['confirm-password'].message}
-                </p>
-              )}
-            </div>
+            <Input
+              label="Email address"
+              name="email"
+              placeholder="Email address"
+              type="email"
+              register={registerInput}
+              required
+              error={errors && errors.email?.message}
+            />
+            <Input
+              label="Password"
+              name="password"
+              placeholder="Password"
+              type="password"
+              register={registerInput}
+              required
+              error={errors && errors.password?.message}
+            />
+            <Input
+              label="Confirm password"
+              name="confirm-password"
+              placeholder="Confirm password"
+              type="password"
+              register={registerInput}
+              required
+              validate={(value) =>
+                value !== watch('password')
+                  ? 'Passwords does not match'
+                  : undefined
+              }
+              error={errors && errors['confirm-password']?.message}
+            />
           </div>
           <button
             type="submit"
