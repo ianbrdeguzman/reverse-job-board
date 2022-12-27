@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { config } from '../config';
 import type { Inputs } from './signin';
 import React, { useEffect } from 'react';
@@ -6,6 +5,7 @@ import { getCookie } from 'cookies-next';
 import { auth } from '../firebase/admin';
 import { useAuth } from '../hooks/useAuth';
 import { GetServerSidePropsContext } from 'next';
+import { FormHeader } from '../components/FormHeader';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 interface RegisterInputs extends Inputs {
@@ -34,18 +34,12 @@ export default function RegisterPage() {
 
   return (
     <div className="h-screen flex justify-center items-center">
-      <div className="w-full max-w-md">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-800">
-            Register an account
-          </h2>
-          <Link
-            className="block mt-2 text-center text-sm font-medium text-orange-400 hover:text-orange-500"
-            href={config.routes.signin}
-          >
-            Or sign in to your account
-          </Link>
-        </div>
+      <div className="w-full mx-2 max-w-md">
+        <FormHeader
+          title="Register an account"
+          linkHref={config.routes.signin}
+          linkText="Or sign in to your account"
+        />
         <form
           className="mt-8 space-y-6"
           onSubmit={handleSubmit(handleOnSubmit)}

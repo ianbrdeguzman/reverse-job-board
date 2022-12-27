@@ -5,6 +5,7 @@ import { getCookie } from 'cookies-next';
 import { auth } from '../firebase/admin';
 import { useAuth } from '../hooks/useAuth';
 import { GetServerSidePropsContext } from 'next';
+import { FormHeader } from '../components/FormHeader';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 export interface Inputs {
@@ -30,18 +31,12 @@ export default function SignInPage() {
 
   return (
     <div className="h-screen flex justify-center items-center">
-      <div className="w-full max-w-md">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-800">
-            Sign in to your account
-          </h2>
-          <Link
-            className="block mt-2 text-center text-sm font-medium text-orange-400 hover:text-orange-500"
-            href={config.routes.register}
-          >
-            Or register a new account
-          </Link>
-        </div>
+      <div className="w-full mx-2 max-w-md">
+        <FormHeader
+          title="Sign in to your account"
+          linkHref={config.routes.register}
+          linkText="Or register a new account"
+        />
         <form
           className="mt-8 space-y-6"
           onSubmit={handleSubmit(handleOnSubmit)}
