@@ -20,6 +20,7 @@ interface AuthContextInterface {
   register: (email: string, password: string) => void;
   signIn: (email: string, password: string) => void;
   signOut: () => void;
+  reset: () => void;
 }
 
 export const AuthContext = createContext({} as AuthContextInterface);
@@ -96,6 +97,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
+  const reset = () => {
+    setIsError(false);
+    setIsSuccess(false);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -105,7 +111,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         isSuccess,
         register,
         signIn,
-        signOut
+        signOut,
+        reset
       }}
     >
       {children}
