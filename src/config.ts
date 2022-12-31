@@ -13,5 +13,6 @@ export const config = {
     signin: '/signin',
     register: '/register',
     profile: '/profile'
-  }
+  },
+  clientURL: process.env.NEXT_PUBLIC_CLIENT_URL
 };
