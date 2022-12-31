@@ -1,5 +1,9 @@
+import { config } from '../config';
+import { auth } from '../firebase/admin';
+import { getCookie } from 'cookies-next';
 import { useAuth } from '../hooks/useAuth';
 import { Input } from '../components/Input';
+import { GetServerSidePropsContext } from 'next';
 import { FormHeader } from '../components/FormHeader';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
@@ -59,4 +63,29 @@ export default function ForgotPasswordPage() {
       </div>
     </div>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const token = getCookie(config.cookie.token, context) as string;
+
+  if (!token) {
+    return {
+      props: {}
+    };
+  }
+  try {
+    await auth.verifyIdToken(token);
+
+    return {
+      redirect: {
+        permanent: false,
+        destination: config.routes.home
+      }
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      props: {}
+    };
+  }
 }
