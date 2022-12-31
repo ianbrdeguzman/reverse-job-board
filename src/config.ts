@@ -12,7 +12,12 @@ export const config = {
     home: '/',
     signin: '/signin',
     register: '/register',
-    profile: '/profile'
+    'forgot-password': '/forgot-password',
+    profile: '/profile',
+    about: '/about',
+    filipinos: '/filipinos',
+    donate: '/donate',
+    settings: '/settings'
   },
   clientURL: process.env.NEXT_PUBLIC_CLIENT_URL
 };

@@ -3,9 +3,9 @@ import Link from 'next/link';
 import { config } from '../config';
 import { useRouter } from 'next/router';
 import { useAuth } from '../hooks/useAuth';
+import { ButtonLink } from './ButtonLink';
 import { useComponentVisible } from '../hooks/useComponentVisible';
 import { HiOutlineBars3, HiOutlineXMark, HiOutlineUser } from 'react-icons/hi2';
-import { NavbarLink } from './NavbarLink';
 
 export function Navbar() {
   const { user, signOut } = useAuth();
@@ -47,7 +47,7 @@ export function Navbar() {
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex flex-shrink-0 items-center">
               <Link
-                href="/"
+                href={config.routes.home}
                 className="p-1 rounded-md border border-transparent hover:bg-orange-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
               >
                 <img
@@ -59,9 +59,21 @@ export function Navbar() {
             </div>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
-                <NavbarLink href="/about" name="about" />
-                <NavbarLink href="/filipinos" name="filipinos" />
-                <NavbarLink href="/donate" name="donate" />
+                <ButtonLink
+                  type="secondary"
+                  href={config.routes.about}
+                  name="About"
+                />
+                <ButtonLink
+                  type="secondary"
+                  href={config.routes.filipinos}
+                  name="Filipinos"
+                />
+                <ButtonLink
+                  type="secondary"
+                  href={config.routes.donate}
+                  name="Donate"
+                />
               </div>
             </div>
           </div>
@@ -92,19 +104,17 @@ export function Navbar() {
                   </button>
                 </div>
               ) : (
-                <div className="hidden sm:flex">
-                  <Link
+                <div className="hidden sm:flex space-x-2">
+                  <ButtonLink
+                    type="secondary"
                     href={config.routes.signin}
-                    className="flex w-full justify-center rounded-md border border-transparent bg-orange-400 py-2 px-4 text-sm font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
-                  >
-                    Sign in
-                  </Link>
-                  <Link
+                    name="Sign in"
+                  />
+                  <ButtonLink
+                    type="primary"
                     href={config.routes.register}
-                    className="ml-2 flex w-full justify-center rounded-md border border-transparent bg-orange-300 py-2 px-4 text-sm font-medium text-white hover:bg-orange-500 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
-                  >
-                    Register
-                  </Link>
+                    name="Register"
+                  />
                 </div>
               )}
               {user && showUserMenu && (
@@ -121,7 +131,7 @@ export function Navbar() {
                     Add your profile
                   </Link>
                   <Link
-                    href="/settings"
+                    href={config.routes.settings}
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-100"
                     tabIndex={-1}
                   >
@@ -146,18 +156,29 @@ export function Navbar() {
       {showMenu && (
         <div className="sm:hidden">
           <div className="space-y-1 px-2 pt-2 pb-3 ">
-            <NavbarLink href="/about" name="about" />
-            <NavbarLink href="/filipinos" name="filipinos" />
-            <NavbarLink href="/donate" name="donate" />
+            <ButtonLink
+              type="secondary"
+              href={config.routes.about}
+              name="About"
+            />
+            <ButtonLink
+              type="secondary"
+              href={config.routes.filipinos}
+              name="Filipinos"
+            />
+            <ButtonLink
+              type="secondary"
+              href={config.routes.donate}
+              name="Donate"
+            />
             {!user && (
               <div>
-                <div className="border-b-2" />
-                <Link
+                <div className="border-b-2 my-4" />
+                <ButtonLink
+                  type="primary"
                   href={config.routes.register}
-                  className="block text-center rounded-md border border-transparent bg-orange-300 mt-4 py-2 px-4 text-sm font-medium text-white hover:bg-orange-500 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
-                >
-                  Register
-                </Link>
+                  name="Register"
+                />
                 <p className="mt-2 text-center text-sm text-white">
                   Already have an account?{' '}
                   <Link
