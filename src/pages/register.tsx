@@ -31,7 +31,6 @@ export default function RegisterPage() {
     return reset;
   }, []);
 
-  console.log(errors);
   return (
     <div className="h-screen flex justify-center items-center">
       <div className="w-full mx-2 max-w-md">
