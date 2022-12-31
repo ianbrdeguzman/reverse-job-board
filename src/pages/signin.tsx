@@ -9,7 +9,7 @@ import { GetServerSidePropsContext } from 'next';
 import { FormHeader } from '../components/FormHeader';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
-export interface SignInInputs {
+interface Inputs {
   email: string;
   password: string;
 }
@@ -20,9 +20,9 @@ export default function SignInPage() {
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm<SignInInputs>();
+  } = useForm<Inputs>();
 
-  const handleOnSubmit: SubmitHandler<SignInInputs> = ({ email, password }) => {
+  const handleOnSubmit: SubmitHandler<Inputs> = ({ email, password }) => {
     signIn(email, password);
   };
 
@@ -43,7 +43,7 @@ export default function SignInPage() {
           onSubmit={handleSubmit(handleOnSubmit)}
         >
           <div className="-space-y-px rounded-md">
-            <Input
+            <Input<Inputs>
               label="Email address"
               name="email"
               placeholder="Email address"
@@ -52,7 +52,7 @@ export default function SignInPage() {
               required
               error={errors && errors.email?.message}
             />
-            <Input
+            <Input<Inputs>
               label="Password"
               name="password"
               placeholder="Password"

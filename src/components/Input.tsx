@@ -1,20 +1,24 @@
-import { SignInInputs } from '../pages/signin';
 import React, { HTMLInputTypeAttribute } from 'react';
-import { Path, UseFormRegister, Validate } from 'react-hook-form';
-import type { RegisterInputs } from '../pages/register';
+import {
+  FieldValues,
+  Path,
+  UnPackAsyncDefaultValues,
+  UseFormRegister,
+  Validate
+} from 'react-hook-form';
 
-interface InputProps {
+interface InputProps<T> {
   label: string;
-  name: Path<SignInInputs | RegisterInputs>;
+  name: Path<UnPackAsyncDefaultValues<T extends FieldValues ? any : any>>;
   placeholder: string;
   type: HTMLInputTypeAttribute;
-  register: UseFormRegister<SignInInputs | RegisterInputs>;
+  register: UseFormRegister<T & Record<string, any>>;
   required: boolean;
   validate?: Validate<string | undefined>;
   error?: string;
 }
 
-export function Input({
+export function Input<T>({
   label,
   name,
   type,
@@ -23,7 +27,7 @@ export function Input({
   required = false,
   validate,
   error
-}: InputProps) {
+}: InputProps<T>) {
   return (
     <div className="relative">
       <label htmlFor={name} className="sr-only">

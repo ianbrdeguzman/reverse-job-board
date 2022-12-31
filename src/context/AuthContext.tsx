@@ -1,17 +1,17 @@
-import { auth, firestore } from '../firebase/client';
+import { auth } from '../firebase/client';
 import { createContext, useEffect, useState } from 'react';
 import {
   User,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut as signOutUser,
-  createUserWithEmailAndPassword
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail
 } from 'firebase/auth';
 import { FirebaseError } from 'firebase/app';
 import { deleteCookie, setCookie } from 'cookies-next';
 import { useRouter } from 'next/router';
 import { config } from '../config';
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 
 interface AuthContextInterface {
   user: User | null;
@@ -22,6 +22,7 @@ interface AuthContextInterface {
   signIn: (email: string, password: string) => void;
   signOut: () => void;
   reset: () => void;
+  forgotPassword: (email: string) => void;
 }
 
 export const AuthContext = createContext({} as AuthContextInterface);
@@ -40,14 +41,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user !== null) {
-        createUser({
-          uid: user.uid,
-          email: user.email,
-          emailVerified: user.emailVerified,
-          joinedAt: user.metadata.creationTime,
-          phoneNumber: user.phoneNumber,
-          photoURL: user.photoURL
-        });
         const token = await user.getIdToken();
         setCookie(config.cookie.token, token);
         setUser(user);
@@ -60,16 +53,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     return unsubscribe;
   }, [user]);
-
-  const createUser = async (user: any) => {
-    try {
-      await setDoc(doc(firestore, 'users', user.uid), user);
-    } catch (error) {
-      if (error instanceof FirebaseError) setIsError(true);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const register = async (email: string, password: string) => {
     setIsLoading(true);
@@ -120,6 +103,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setIsSuccess(false);
   };
 
+  const forgotPassword = async (email: string) => {
+    try {
+      await sendPasswordResetEmail(auth, email, {
+        url: `${config.clientURL}/signin`
+      });
+    } catch (error) {
+      if (error instanceof FirebaseError) setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -130,7 +125,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         register,
         signIn,
         signOut,
-        reset
+        reset,
+        forgotPassword
       }}
     >
       {children}
