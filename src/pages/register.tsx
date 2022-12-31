@@ -8,7 +8,7 @@ import { GetServerSidePropsContext } from 'next';
 import { FormHeader } from '../components/FormHeader';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
-export interface RegisterInputs {
+interface Inputs {
   email: string;
   password: string;
   'confirm-password'?: string;
@@ -21,12 +21,9 @@ export default function RegisterPage() {
     handleSubmit,
     watch,
     formState: { errors }
-  } = useForm<RegisterInputs>();
+  } = useForm<Inputs>();
 
-  const handleOnSubmit: SubmitHandler<RegisterInputs> = ({
-    email,
-    password
-  }) => {
+  const handleOnSubmit: SubmitHandler<Inputs> = ({ email, password }) => {
     register(email, password);
   };
 
@@ -48,7 +45,7 @@ export default function RegisterPage() {
           onSubmit={handleSubmit(handleOnSubmit)}
         >
           <div className=" rounded-md shadow-sm">
-            <Input
+            <Input<Inputs>
               label="Email address"
               name="email"
               placeholder="Email address"
@@ -57,7 +54,7 @@ export default function RegisterPage() {
               required
               error={errors && errors.email?.message}
             />
-            <Input
+            <Input<Inputs>
               label="Password"
               name="password"
               placeholder="Password"
