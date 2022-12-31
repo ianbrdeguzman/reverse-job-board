@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { useAuth } from '../hooks/useAuth';
 import { useComponentVisible } from '../hooks/useComponentVisible';
 import { HiOutlineBars3, HiOutlineXMark, HiOutlineUser } from 'react-icons/hi2';
+import { NavbarLink } from './NavbarLink';
 
 export function Navbar() {
   const { user, signOut } = useAuth();
@@ -58,25 +59,9 @@ export function Navbar() {
             </div>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
-                {/* <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" --> */}
-                <Link
-                  href="/about"
-                  className="flex w-full justify-center rounded-md border border-transparent bg-orange-400 py-2 px-4 text-sm font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
-                >
-                  About
-                </Link>
-                <Link
-                  href="/filipinos"
-                  className="flex w-full justify-center rounded-md border border-transparent bg-orange-400 py-2 px-4 text-sm font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
-                >
-                  Filipinos
-                </Link>
-                <Link
-                  href="/donate"
-                  className="flex w-full justify-center rounded-md border border-transparent bg-orange-400 py-2 px-4 text-sm font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
-                >
-                  Donate
-                </Link>
+                <NavbarLink href="/about" name="about" />
+                <NavbarLink href="/filipinos" name="filipinos" />
+                <NavbarLink href="/donate" name="donate" />
               </div>
             </div>
           </div>
@@ -161,25 +146,9 @@ export function Navbar() {
       {showMenu && (
         <div className="sm:hidden">
           <div className="space-y-1 px-2 pt-2 pb-3 ">
-            {/* <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" --> */}
-            <Link
-              href="/about"
-              className="block rounded-md border border-transparent bg-orange-400 p-2 text-base font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
-            >
-              About
-            </Link>
-            <Link
-              href="/filipinos"
-              className="block rounded-md border border-transparent bg-orange-400 p-2 text-base font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
-            >
-              Filipinos
-            </Link>
-            <Link
-              href="/donate"
-              className="block rounded-md border border-transparent bg-orange-400 p-2 text-base font-medium text-white hover:bg-orange-300 focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-2"
-            >
-              Donate
-            </Link>
+            <NavbarLink href="/about" name="about" />
+            <NavbarLink href="/filipinos" name="filipinos" />
+            <NavbarLink href="/donate" name="donate" />
             {!user && (
               <div>
                 <div className="border-b-2" />
