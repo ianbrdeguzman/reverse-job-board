@@ -7,7 +7,7 @@ import { ProtectedPage } from '../components/ProtectedPage';
 export default function ProfilePage() {
   return (
     <ProtectedPage>
-      <div className="pt-[4rem]">
+      <div className="h-screen flex justify-center items-center">
         <h1>Profile Page</h1>
       </div>
     </ProtectedPage>

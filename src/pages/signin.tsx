@@ -63,7 +63,7 @@ export default function SignInPage() {
             />
           </div>
           <Link
-            href="/forgot-password"
+            href={config.routes['forgot-password']}
             className="mt-2 text-sm font-medium text-orange-400 hover:text-orange-500"
           >
             Forgot your password?
