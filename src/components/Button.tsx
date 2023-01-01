@@ -1,10 +1,15 @@
-import { ButtonType, getButtonLinkStyle } from '../lib/getButtonLinkStyle';
+import { ButtonVariant, getButtonStyle } from '../lib/getButtonStyle';
 
 interface ButtonProps {
-  type: ButtonType;
+  type: 'button' | 'submit';
+  variant: ButtonVariant;
   name: string;
 }
 
-export function Button({ type, name }: ButtonProps) {
-  return <div className={getButtonLinkStyle(type)}>{name}</div>;
+export function Button({ type, variant, name }: ButtonProps) {
+  return (
+    <button type={type} className={getButtonStyle(variant)}>
+      {name}
+    </button>
+  );
 }
