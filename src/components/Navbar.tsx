@@ -60,17 +60,17 @@ export function Navbar() {
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
                 <ButtonLink
-                  type="secondary"
+                  variant="secondary"
                   href={config.routes.about}
                   name="About"
                 />
                 <ButtonLink
-                  type="secondary"
+                  variant="secondary"
                   href={config.routes.filipinos}
                   name="Filipinos"
                 />
                 <ButtonLink
-                  type="secondary"
+                  variant="secondary"
                   href={config.routes.donate}
                   name="Donate"
                 />
@@ -106,12 +106,12 @@ export function Navbar() {
               ) : (
                 <div className="hidden sm:flex space-x-2">
                   <ButtonLink
-                    type="secondary"
+                    variant="secondary"
                     href={config.routes.signin}
                     name="Sign in"
                   />
                   <ButtonLink
-                    type="primary"
+                    variant="primary"
                     href={config.routes.register}
                     name="Register"
                   />
@@ -157,17 +157,17 @@ export function Navbar() {
         <div className="sm:hidden">
           <div className="space-y-1 px-2 pt-2 pb-3 ">
             <ButtonLink
-              type="secondary"
+              variant="secondary"
               href={config.routes.about}
               name="About"
             />
             <ButtonLink
-              type="secondary"
+              variant="secondary"
               href={config.routes.filipinos}
               name="Filipinos"
             />
             <ButtonLink
-              type="secondary"
+              variant="secondary"
               href={config.routes.donate}
               name="Donate"
             />
@@ -175,7 +175,7 @@ export function Navbar() {
               <div>
                 <div className="border-b-2 my-4" />
                 <ButtonLink
-                  type="primary"
+                  variant="primary"
                   href={config.routes.register}
                   name="Register"
                 />
